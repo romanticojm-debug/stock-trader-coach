@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Trader Coach</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:16px;background:#0b1220;color:white;font-family:Arial}
+header,.panel{background:#17243a;padding:18px;border-radius:14px;margin-bottom:15px}
+h1{color:#42d6a4}
+input,select,button{padding:12px;border:0;border-radius:8px;margin:5px}
+input,select{background:#263750;color:white;max-width:100%}
+button{cursor:pointer;font-weight:bold}
+.green{background:#16a879;color:white}
+.red{background:#d94b58;color:white}
+.blue{background:#2675d8;color:white}
+.stat{font-size:25px;font-weight:bold;color:#42d6a4}
+.small{color:#aab9cc;font-size:12px}
+#chart{height:450px;width:100%}
+</style>
+</head>
+<body>
+
+<header>
+<h1>STOCK TRADER COACH</h1>
+<p>Real-Time Market Analysis & Paper Trading</p>
+</header>
+
+<div class="panel">
+<h2>Select Stock</h2>
+<select id="symbol">
+<option value="NASDAQ:AAPL">Apple</option>
+<option value="NASDAQ:NVDA">NVIDIA</option>
+<option value="NASDAQ:TSLA">Tesla</option>
+<option value="NASDAQ:MSFT">Microsoft</option>
+<option value="NASDAQ:AMZN">Amazon</option>
+<option value="NASDAQ:GOOGL">Google</option>
+<option value="NASDAQ:META">Meta</option>
+<option value="NASDAQ:AMD">AMD</option>
+</select>
+<button class="blue" onclick="loadChart()">LOAD CHART</button>
+</div>
+
+<div class="panel">
+<h2>Market Chart - 15 Minutes</h2>
+<div id="chart"></div>
+<p class="small">TradingView market chart. Data availability depends on the exchange.</p>
+</div>
+
+<div class="panel">
+<h2>Trading Signal</h2>
+<div class="stat" id="signal">WAIT</div>
+<p id="signalInfo">Waiting for analysis engine.</p>
+</div>
+
+<div class="panel">
+<h2>Paper Trading Account</h2>
+<p>Starting balance</p>
+<div class="stat" id="balance">$10,000.00</div>
+<p>Position: <strong id="position">None</strong></p>
+
+<h3>Practice Trade</h3>
+<input id="price" type="number" min="0.01" step="0.01" placeholder="Stock price">
+<input id="shares" type="number" min="1" step="1" value="1">
+
+<br>
+<button class="green" onclick="trade('BUY')">BUY</button>
+<button class="red" onclick="trade('SELL')">SELL</button>
+<p id="message">Ready to practice.</p>
+<button class="blue" onclick="resetAccount()">RESET ACCOUNT</button>
+</div>
+
+<script>
+let balance=10000;
+let position=null;
+
+function loadChart(){
+ const symbol=document.getElementById("symbol").value;
+ const chart=document.getElementById("chart");
+ chart.innerHTML="";
+ const container=document.createElement("div");
+ container.style.height="100%";
+ container.style.width="100%";
+ container.className="tradingview-widget-container";
+ const widget=document.createElement("div");
+ widget.className="tradingview-widget-container__widget";
+ widget.style.height="100%";
+ container.appendChild(widget);
+ const script=document.createElement("script");
+ script.src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+ script.async=true;
+ script.innerHTML=JSON.stringify({
+  autosize:true,
+  symbol:symbol,
+  interval:"15",
+  timezone:"America/Chicago",
+  theme:"dark",
+  style:"1",
+  locale:"en",
+  allow_symbol_change:true,
+  studies:["RSI@tv-basicstudies","MAExp@tv-basicstudies","Volume@tv-basicstudies"]
+ });
+ container.appendChild(script);
+ chart.appendChild(container);
+}
+
+function updateAccount(){
+ document.getElementById("balance").textContent="$"+balance.toFixed(2);
+ document.getElementById("position").textContent=position?
+ position.shares+" shares @ $"+position.price.toFixed(2):"None";
+}
+
+function trade(action){
+ const price=Number(document.getElementById("price").value);
+ const shares=Number(document.getElementById("shares").value);
+ if(!Number.isFinite(price)||price<=0||!Number.isInteger(shares)||shares<=0){
+  alert("Enter a valid price and whole number of shares.");
+  return;
+ }
+ const total=price*shares;
+ if(action==="BUY"){
+  if(position){alert("Close your current position first.");return;}
+  if(total>balance){alert("Insufficient practice funds.");return;}
+  balance-=total;
+  position={price,shares};
+  document.getElementById("message").textContent="Simulated BUY completed.";
+ }else{
+  if(!position||shares!==position.shares){
+   alert("Enter the exact number of shares in your position.");
+   return;
+  }
+  const profit=(price-position.price)*shares;
+  balance+=total;
+  position=null;
+  document.getElementById("message").textContent=
+  "Simulated SELL. Profit/Loss: $"+profit.toFixed(2);
+ }
+ updateAccount();
+}
+
+function resetAccount(){
+ balance=10000;
+ position=null;
+ document.getElementById("message").textContent="Account reset.";
+ updateAccount();
+}
+
+loadChart();
+updateAccount();
+</script>
+</body>
+</html>
+
+
+On Thu, Nov 12, 2026, 6:28 PM Jesus Martinez <jesus@midsouthfltworks.com> wrote:
