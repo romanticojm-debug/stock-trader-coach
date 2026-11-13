@@ -187,7 +187,7 @@ function analyzeStrategy(){
   reason.textContent =
     "Necesitamos conectar datos de velas e indicadores RSI, MACD y volumen para calcular señales.";
 }
-loadChart();function loadTickerTape(){
+loadChart();function loadTickerTape(){analyzeStrategy();
  const container=document.getElementById("ticker");
  container.innerHTML="";
  const widget=document.createElement("div");
