@@ -22,7 +22,12 @@ button{cursor:pointer;font-weight:bold}
 </head>
 <body>
 
-<header>
+<header><div class="panel">
+<h2>LIVE MARKET WATCH</h2>
+<div id="ticker">
+Loading live market prices...
+</div>
+</div>
 <h1>STOCK TRADER COACH</h1>
 <p>Real-Time Market Analysis & Paper Trading</p>
 </header>
@@ -146,7 +151,38 @@ function resetAccount(){
  updateAccount();
 }
 
-loadChart();
+loadChart();function loadTickerTape(){
+ const container=document.getElementById("ticker");
+ container.innerHTML="";
+ const widget=document.createElement("div");
+ widget.className="tradingview-widget-container";
+ const tape=document.createElement("div");
+ tape.className="tradingview-widget-container__widget";
+ widget.appendChild(tape);
+
+ const script=document.createElement("script");
+ script.src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js";
+ script.async=true;
+ script.innerHTML=JSON.stringify({
+  symbols:[
+   {proName:"NASDAQ:AAPL",title:"Apple"},
+   {proName:"NASDAQ:NVDA",title:"NVIDIA"},
+   {proName:"NASDAQ:TSLA",title:"Tesla"},
+   {proName:"NASDAQ:MSFT",title:"Microsoft"},
+   {proName:"NASDAQ:AMZN",title:"Amazon"},
+   {proName:"NASDAQ:GOOGL",title:"Google"},
+   {proName:"NASDAQ:AMD",title:"AMD"},
+   {proName:"BITSTAMP:BTCUSD",title:"Bitcoin"}
+  ],
+  showSymbolLogo:true,
+  colorTheme:"dark",
+  isTransparent:false,
+  displayMode:"adaptive",
+  locale:"en"
+ });
+ widget.appendChild(script);
+ container.appendChild(widget);
+}
 updateAccount();
 </script>
 </body>
