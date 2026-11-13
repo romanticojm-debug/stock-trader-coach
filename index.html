@@ -171,7 +171,22 @@ function resetAccount(){
  document.getElementById("message").textContent="Account reset.";
  updateAccount();
 }
+function analyzeStrategy(){
+  const signal = document.getElementById("strategySignal");
+  const message = document.getElementById("strategyMessage");
+  const up = document.getElementById("upProbability");
+  const down = document.getElementById("downProbability");
+  const reason = document.getElementById("strategyReason");
 
+  if(!signal || !message || !up || !down || !reason) return;
+
+  signal.textContent = "ESPERAR";
+  message.textContent = "El análisis automático aún no está conectado.";
+  up.textContent = "--%";
+  down.textContent = "--%";
+  reason.textContent =
+    "Necesitamos conectar datos de velas e indicadores RSI, MACD y volumen para calcular señales.";
+}
 loadChart();function loadTickerTape(){
  const container=document.getElementById("ticker");
  container.innerHTML="";
