@@ -174,30 +174,32 @@ function resetAccount(){
 function analyzeStrategy() {
     const signal = document.getElementById("strategySignal");
     const message = document.getElementById("strategyMessage");
-    const up = document.getElementById("upProbability");
-    const down = document.getElementById("downProbability");
+    const upProbability = document.getElementById("upProbability");
+    const downProbability = document.getElementById("downProbability");
     const reason = document.getElementById("strategyReason");
 
-    if (!signal || !message || !up || !down || !reason) return;
+    const price = Number(window.currentPrice);
 
-    const price = Number(window.currentPrice || 0);
-
-    if (!price || !Number.isFinite(price)) {
-        signal.textContent = "ESPERAR";
-        message.textContent = "Esperando datos reales del mercado.";
-        up.textContent = "--%";
-        down.textContent = "--%";
-        reason.textContent = "No hay un precio válido para analizar.";
+    if (!Number.isFinite(price) || price <= 0) {
+        if (signal) signal.textContent = "ESPERAR";
+        if (message) message.textContent = "Esperando datos reales del mercado.";
+        if (upProbability) upProbability.textContent = "--%";
+        if (downProbability) downProbability.textContent = "--%";
+        if (reason) reason.textContent = "No hay datos suficientes para analizar.";
         return;
     }
 
-    signal.textContent = "ESPERAR";
-    message.textContent = "Precio recibido. Faltan indicadores para confirmar la dirección.";
-    up.textContent = "--%";
-    down.textContent = "--%";
-    reason.textContent = "Conecta RSI, MACD y velas en tiempo real antes de generar probabilidades.";
+    if (signal) signal.textContent = "ESPERAR";
+    if (message) {
+        message.textContent = "Precio recibido. Esperando indicadores.";
+    }
+    if (upProbability) upProbability.textContent = "--%";
+    if (downProbability) downProbability.textContent = "--%";
+    if (reason) {
+        reason.textContent =
+            "Falta conectar RSI, MACD, volumen y velas para calcular probabilidades reales.";
+    }
 }
-
 function loadTickerTape(){
  const container=document.getElementById("ticker");
  container.innerHTML="";
