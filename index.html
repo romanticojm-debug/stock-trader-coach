@@ -171,22 +171,33 @@ function resetAccount(){
  document.getElementById("message").textContent="Account reset.";
  updateAccount();
 }
-function analyzeStrategy(){
-  const signal = document.getElementById("strategySignal");
-  const message = document.getElementById("strategyMessage");
-  const up = document.getElementById("upProbability");
-  const down = document.getElementById("downProbability");
-  const reason = document.getElementById("strategyReason");
+function analyzeStrategy() {
+    const signal = document.getElementById("strategySignal");
+    const message = document.getElementById("strategyMessage");
+    const up = document.getElementById("upProbability");
+    const down = document.getElementById("downProbability");
+    const reason = document.getElementById("strategyReason");
 
-  if(!signal || !message || !up || !down || !reason) return;
+    if (!signal || !message || !up || !down || !reason) return;
 
-  signal.textContent = "ESPERAR";
-  message.textContent = "El análisis automático aún no está conectado.";
-  up.textContent = "--%";
-  down.textContent = "--%";
-  reason.textContent =
-    "Necesitamos conectar datos de velas e indicadores RSI, MACD y volumen para calcular señales.";
+    const price = Number(window.currentPrice || 0);
+
+    if (!price || !Number.isFinite(price)) {
+        signal.textContent = "ESPERAR";
+        message.textContent = "Esperando datos reales del mercado.";
+        up.textContent = "--%";
+        down.textContent = "--%";
+        reason.textContent = "No hay un precio válido para analizar.";
+        return;
+    }
+
+    signal.textContent = "ESPERAR";
+    message.textContent = "Precio recibido. Faltan indicadores para confirmar la dirección.";
+    up.textContent = "--%";
+    down.textContent = "--%";
+    reason.textContent = "Conecta RSI, MACD y velas en tiempo real antes de generar probabilidades.";
 }
+
 function loadTickerTape(){
  const container=document.getElementById("ticker");
  container.innerHTML="";
